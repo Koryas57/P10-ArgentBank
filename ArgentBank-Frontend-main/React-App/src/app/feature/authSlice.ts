@@ -1,7 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+
 // URL de base de l'API
 const API_BASE_URL = 'http://localhost:3001/api/v1';
+
+
 // Interface pour un utilisateur
 interface User {
     email: string;
@@ -12,6 +15,7 @@ interface User {
     updatedAt: string;
     id: string;
 }
+
 // Interface pour l'état initial
 interface AuthState {
     token: string | null;
@@ -21,6 +25,8 @@ interface AuthState {
     isEditingProfile: boolean; // Permet de gérer l'édition du profil
     userProfile: User | null;  // Stocke les données du profil utilisateur
 }
+
+
 // On récupère le token depuis localStorage ou sessionStorage
 const tokenFromStorage = localStorage.getItem('token') || sessionStorage.getItem('token');
 const initialState: AuthState = {
@@ -31,6 +37,8 @@ const initialState: AuthState = {
     isEditingProfile: false, // Initialement, l'utilisateur n'est pas en mode édition
     userProfile: null, // Initialement, le profil utilisateur n'est pas chargé
 };
+
+
 // AsyncThunk pour gérer la connexion
 export const loginUser = createAsyncThunk(
     'auth/login',
@@ -51,6 +59,8 @@ export const loginUser = createAsyncThunk(
         }
     }
 );
+
+
 // AsyncThunk pour récupérer le profil utilisateur
 export const fetchUserProfile = createAsyncThunk(
     'auth/fetchUserProfile',
@@ -71,6 +81,8 @@ export const fetchUserProfile = createAsyncThunk(
         }
     }
 );
+
+
 // AsyncThunk pour mettre à jour le profil utilisateur
 export const updateUserProfile = createAsyncThunk(
     'auth/updateUserProfile',
@@ -95,6 +107,8 @@ export const updateUserProfile = createAsyncThunk(
         }
     }
 );
+
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -157,5 +171,10 @@ const authSlice = createSlice({
             });
     },
 });
+
+
+
+
+
 export const { logout, startProfileEdit ,cancelProfileEdit } = authSlice.actions;
 export default authSlice.reducer;

@@ -11,7 +11,7 @@ import { fetchUserProfile, startProfileEdit } from '../../app/feature/authSlice'
 export const Profile: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     // On recupère le profil utilisateur chargé , l'état de l'édition du profil
-    const {isEditingProfile, userProfile  } = useSelector((state: RootState) => state.auth);
+    const { isEditingProfile, userProfile } = useSelector((state: RootState) => state.auth);
     const [userName, setUserName] = useState('');
     const [firstName, setFirstName] = useState('');
     const handleEditClick = () => {
@@ -22,13 +22,13 @@ export const Profile: React.FC = () => {
         // Dispatch fetchUserProfile pour charger le profil au démarrage
         dispatch(fetchUserProfile());
     }, [dispatch]);
-// Effet pour mettre à jour les champs locaux lorsque le userProfile est mis à jour
-useEffect(() => {
-    if (userProfile) {
-      setUserName(userProfile.userName || '');
-      setFirstName(userProfile.firstName || '');
-    }
-  }, [userProfile]);
+    // Effet pour mettre à jour les champs locaux lorsque le userProfile est mis à jour
+    useEffect(() => {
+        if (userProfile) {
+        setUserName(userProfile.userName || '');
+        setFirstName(userProfile.firstName || '');
+        }
+    }, [userProfile]);
 
   
     return (
