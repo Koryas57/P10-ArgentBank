@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import logo from '../../assets/images/argentBankLogo.png';
+import logo from '../../assets/images/argentBankLogo.webp';
 import { AppDispatch, RootState } from '../../app/store';
 import { logout } from '../../app/feature/authSlice';
 

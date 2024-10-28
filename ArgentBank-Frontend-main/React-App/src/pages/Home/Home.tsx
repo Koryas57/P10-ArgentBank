@@ -2,10 +2,9 @@ import React from 'react';
 import { Navigation } from '../../components/Navigation/Navigation';
 import { Footer } from '../../components/Footer/Footer';
 import { Feature } from '../../components/Feature/Feature';
-import chatIcon from '../../assets/images/icon-chat.png';
-import moneyIcon from '../../assets/images/icon-money.png';
-import securityIcon from '../../assets/images/icon-security.png';
-/** Page d'accueil de l'application. */
+import chatIcon from '../../assets/images/icon-chat.webp';
+import moneyIcon from '../../assets/images/icon-money.webp';
+import securityIcon from '../../assets/images/icon-security.webp';
 
 
 export const Home: React.FC = () => {
