@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../app/feature/authSlice';
-
+// import accountsReducer from './feature/accountsSlice'; // Pour récupérer les infos des comptes utilisateurs de manière dynamique
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    // accounts: accountsReducer,
   },
 });
 
