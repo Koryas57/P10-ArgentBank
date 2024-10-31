@@ -11,25 +11,29 @@ import { fetchUserProfile, startProfileEdit } from '../../app/feature/authSlice'
 
 export const Profile: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    // On recupère le profil utilisateur chargé , l'état de l'édition du profil
+    // We retrieve the user profile and profile edit state from the Redux store
     const { isEditingProfile, userProfile } = useSelector((state: RootState) => state.auth);
-    // On recupère les informations du compte utilisateur chargé
+    // We retrieve the account information (if available) and account state changes
     // const { userAccounts, loading, error } = useSelector((state: RootState) => state.accounts); 
+
+    // We set local state for displaying user information
     const [userName, setUserName] = useState('');
     const [firstName, setFirstName] = useState('');
 
-
+    // We handle the click event to start editing the profile
     const handleEditClick = () => {
         dispatch(startProfileEdit());
     };
 
-    // Effet pour récupérer le profil utilisateur au montage du composant
+    // Effect to fetch user profile when the component mounts
     useEffect(() => {
-        // Dispatch fetchUserProfile pour charger le profil au démarrage
+        // We dispatch fetchUserProfile to load the profile on startup
         dispatch(fetchUserProfile());
-        // dispatch(fetchUserAccounts()); // Pour dispatcher les infos utilisateurs dans <Account />
+        // dispatch(fetchUserAccounts()); // Uncomment to fetch user account information for <Account />
     }, [dispatch]);
-    // Effet pour mettre à jour les champs locaux lorsque le userProfile est mis à jour
+
+    
+    // Effect to update local fields when the userProfile changes
     useEffect(() => {
         if (userProfile) {
         setUserName(userProfile.userName || '');
@@ -37,6 +41,7 @@ export const Profile: React.FC = () => {
         }
     }, [userProfile]);
 
+    // Uncomment these lines to handle loading and error messages for accounts
     // if (loading) return <p>Loading accounts...</p>;
     // if (error) return <p>Error loading accounts: {error}</p>;
 
@@ -46,10 +51,10 @@ export const Profile: React.FC = () => {
             <Navigation />
             <main className="main bg-dark">
                 {isEditingProfile ? (
-                    // Affiche le formulaire d'édition lorsque l'utilisateur clique sur "Edit Name"
+                    // We display the edit form when the user clicks "Edit Name"
                     <EditUserInfo />
                 ) : (
-                    // Afficher les informations par défaut lorsqu'on n'est pas en mode édition
+                     // We display the default user information when not in edit mode
                     <div className="header">
                         <h1>Welcome back<br /> {`${firstName} ${userName} !`}</h1>
                         <button className="edit-button" onClick={handleEditClick}>
@@ -57,6 +62,7 @@ export const Profile: React.FC = () => {
                         </button>
                     </div>
                 )}
+                {/* We map over userAccounts (if available) to display individual account information */}
                 {/* {userAccounts.map((account, index) => (
                     <Account 
                         key={index}

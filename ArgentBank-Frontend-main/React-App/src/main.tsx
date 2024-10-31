@@ -6,7 +6,8 @@ import { store } from './app/store.ts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Provider store={store}> {/* Mettre le Provider dans le point d'entrée */}
+    {/* We wrap the App component with Provider to give access to the Redux store */}
+    <Provider store={store}>
     <App />
     </Provider>
   </StrictMode>,

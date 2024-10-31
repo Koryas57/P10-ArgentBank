@@ -4,13 +4,13 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { RootState } from '../../app/store';
 
 
-//Composant pour les routes protégées , ici la route protégée est celle du profil
- export const ProtectedRoute: React.FC = () => {
-    const { isAuthenticated} = useSelector((state: RootState) => state.auth);
+// We create a component for protected routes, here specifically for the profile route
+export const ProtectedRoute: React.FC = () => {
+  const { isAuthenticated} = useSelector((state: RootState) => state.auth);
 
     
-  // Si l'utilisateur n'est pas authentifié, on le redirige vers la page de connexion
-  // Si l'utilisateur est authentifié on affiche les composants enfants de la route protégée
-  // Le composant Outlet de react-router-dom permet d'afficher les composants enfants de la route protégée
+  
+  // The Outlet component from react-router-dom allows us to render the children of the protected route
+  // If the user is not authenticated, we redirect them to the sign-in page
   return isAuthenticated ? <Outlet /> : <Navigate to="/sign-in" />;
 };

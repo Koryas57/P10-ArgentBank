@@ -6,6 +6,7 @@ import chatIcon from '../../assets/images/icon-chat.webp';
 import moneyIcon from '../../assets/images/icon-money.webp';
 import securityIcon from '../../assets/images/icon-security.webp';
 
+// Home page component 
 
 export const Home: React.FC = () => {
 

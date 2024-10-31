@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// URL de base de l'API
 const API_BASE_URL = 'http://localhost:3001/api/v1';
 
 
-// Interface pour un utilisateur
+// Interface for a user object
 interface User {
     email: string;
     firstName: string;
@@ -16,55 +15,57 @@ interface User {
     id: string;
 }
 
-// Interface pour l'état initial
+// Interface for the initial state of authentication
 interface AuthState {
     token: string | null;
     isAuthenticated: boolean;
     loading: boolean;
     error: string | null;
-    isEditingProfile: boolean; // Permet de gérer l'édition du profil
-    userProfile: User | null;  // Stocke les données du profil utilisateur
+    isEditingProfile: boolean; // Manages profile edit mode
+    userProfile: User | null; // Stores user profile data
 }
 
 
-// On récupère le token depuis localStorage ou sessionStorage
+// We retrieve the token from localStorage or sessionStorage
 const tokenFromStorage = localStorage.getItem('token') || sessionStorage.getItem('token');
 const initialState: AuthState = {
     token: tokenFromStorage ? tokenFromStorage : null,
-    isAuthenticated: !!tokenFromStorage,  // Si le token existe, l'utilisateur est authentifié
+    isAuthenticated: !!tokenFromStorage,  // If the token exists, the user is authenticated
     loading: false,
     error: null,
-    isEditingProfile: false, // Initialement, l'utilisateur n'est pas en mode édition
-    userProfile: null, // Initialement, le profil utilisateur n'est pas chargé
+    isEditingProfile: false, // Initially, the user is not in edit mode
+    userProfile: null, // Initially, the user profile is not loaded
 };
 
 
-// AsyncThunk pour gérer la connexion
+// AsyncThunk for handling user login
 export const loginUser = createAsyncThunk(
     'auth/login',
     async (credentials: { email: string; password: string; rememberMe: boolean }, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/user/login`, credentials);
             const token = response.data.body.token;
-            // On stocke le token dans le storage approprié
+
+            // We store the token in either localStorage or sessionStorage based on the "Remember Me" option
             if (credentials.rememberMe) {
-                localStorage.setItem('token', token); // On utilise localStorage si "Remember Me" est coché pour assurer la persistance du token
+                localStorage.setItem('token', token); // Use localStorage if "Remember Me" is checked
             } else {
-                sessionStorage.setItem('token', token); // Sinon on utilise sessionStorage pour une session
+                sessionStorage.setItem('token', token); // Use sessionStorage for a session-based token
             }
+
             return token;
         } catch (error) {
             console.error(error);
-            return rejectWithValue('La connexion a échoué. Veuillez vérifier vos identifiants.');//retourne un message d'erreur
+            return rejectWithValue('La connexion a échoué. Veuillez vérifier vos identifiants.');
         }
     }
 );
 
 
-// AsyncThunk pour récupérer le profil utilisateur
+// AsyncThunk for fetching the user profile
 export const fetchUserProfile = createAsyncThunk(
     'auth/fetchUserProfile',
-    //On utilise le token pour récupérer le profil utilisateur, le underscore est utilisé pour indiquer que le paramètre est ignoré dans la fonction
+    // We use the token to retrieve the user's profile; the underscore indicates an unused parameter
     async (_, { getState, rejectWithValue }) => {
         const state = getState() as { auth: AuthState };
         const token = state.auth.token;
@@ -74,7 +75,7 @@ export const fetchUserProfile = createAsyncThunk(
                     Authorization: `Bearer ${token}`,
                 },
             });
-            return response.data.body;  // Retourne les données du profil utilisateur
+            return response.data.body;  // Returns the user's profile data
         } catch (error) {
             console.error(error);
             return rejectWithValue('Échec de la récupération du profil utilisateur..');
@@ -83,24 +84,24 @@ export const fetchUserProfile = createAsyncThunk(
 );
 
 
-// AsyncThunk pour mettre à jour le profil utilisateur
+// AsyncThunk for updating the user profile
 export const updateUserProfile = createAsyncThunk(
     'auth/updateUserProfile',
-    // Mettre à jour le userName
+    // We update only the userName here
     async (userName: string, { getState, rejectWithValue }) => {
         const state = getState() as { auth: AuthState };
         const token = state.auth.token;
         try {
             const response = await axios.put(
                 `${API_BASE_URL}/user/profile`,
-                { userName },  // Mettre à jour uniquement le userName
+                { userName },  // We send only the userName to update
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 }
             );
-            return response.data.body;  // Retourne les nouvelles données du profil
+            return response.data.body;  // Returns the updated profile data
         } catch (error) {
             console.error(error);
             return rejectWithValue('Échec de la mise à jour du profil utilisateur.');
@@ -114,12 +115,13 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         logout: (state) => {
+            // Here we clear the token and reset authentication status
             state.token = null;
             state.isAuthenticated = false;
-            localStorage.removeItem('token');  // Retirer le token de localStorage
-            sessionStorage.removeItem('token');  // Retirer le token de sessionStorage
+            localStorage.removeItem('token');   // Remove token from localStorage
+            sessionStorage.removeItem('token'); // Remove token from sessionStorage
         },
-        // Ajout d'une action pour activer/désactiver le mode édition du profil
+        // We add an action to enable/disable profile edit mode
         startProfileEdit: (state) => {
             state.isEditingProfile = true;
         },
@@ -127,9 +129,11 @@ const authSlice = createSlice({
             state.isEditingProfile = false;
         },
     },
-    /* Ici sont ajoutés les extraReducers pour gérer les actions asynchrones
-    il y a trois cas à gérer : pending, fulfilled et rejected
+   
+    /* We add extraReducers here to handle async actions
+       We handle three cases: pending, fulfilled, and rejected
     */
+
     extraReducers: (builder) => {
         builder
             .addCase(loginUser.pending, (state) => {
@@ -150,7 +154,7 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchUserProfile.fulfilled, (state, action) => {
-                state.userProfile = action.payload;  // Stocker les données du profil
+                state.userProfile = action.payload;  // Store the user's profile data
                 state.loading = false;
             })
             .addCase(fetchUserProfile.rejected, (state, action) => {
@@ -162,7 +166,7 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(updateUserProfile.fulfilled, (state, action) => {
-                state.userProfile = action.payload;  // Mettre à jour les données du profil
+                state.userProfile = action.payload;  // Update the profile with new data
                 state.loading = false;
             })
             .addCase(updateUserProfile.rejected, (state, action) => {

@@ -6,14 +6,16 @@ import './EditUserInfo.scss';
 
 
 export const EditUserInfo: React.FC = () => {
-    
   const dispatch: AppDispatch = useDispatch();
+  // We retrieve user profile, loading, and error states from Redux store
   const { userProfile, loading, error } = useSelector((state: RootState) => state.auth);
+
+  // We set local state for user information fields
   const [userName, setUserName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   
-  // Effet pour mettre à jour les champs locaux lorsque le userProfile est mis à jour
+  // Effect to update local fields when userProfile changes
   useEffect(() => {
     if (userProfile) {
       setUserName(userProfile.userName || '');
@@ -23,11 +25,12 @@ export const EditUserInfo: React.FC = () => {
   }, [userProfile]);
 
 
+  // We handle the save action to update the userName
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Dispatch de l'action pour mettre à jour le userName
-      //unwrap() est utilisé pour retirer les métadonnées Redux et obtenir directement le résultat de l'action (succès ou échec).
+      // We dispatch the action to update userName
+      // unwrap() is used to directly get the result of the action (success or failure)
       await dispatch(updateUserProfile(userName)).unwrap();
       console.log('UserName updated successfully');
     } catch (error) {
@@ -35,12 +38,12 @@ export const EditUserInfo: React.FC = () => {
     }
   };
 
-
+  // We handle the cancel action to exit edit mode
   const handleCancel = () => {
     dispatch(cancelProfileEdit());
   };
 
-
+  // We display loading and error messages if necessary
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p>Error loading profile: {error}</p>;
 

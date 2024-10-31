@@ -1,11 +1,9 @@
-// src/app/feature/accountsSlice.ts
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3001/api/v1';
 
-// AsyncThunk pour récupérer les comptes utilisateur
+// AsyncThunk for fetching the user accounts
 export const fetchUserAccounts = createAsyncThunk(
     'accounts/fetchUserAccounts',
     async (_, { getState, rejectWithValue }) => {

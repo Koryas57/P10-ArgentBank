@@ -5,24 +5,34 @@ import { AppDispatch, RootState} from '../../app/store';
 import { Navigation } from '../../components/Navigation/Navigation';
 import { Footer } from '../../components/Footer/Footer';
 import { useNavigate } from 'react-router-dom';
-// Composant pour la page de connexion
+
+
+
 export const SignIn: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    // On récupère l'état de chargement, l'erreur et l'authentification
+    // We retrieve the loading, error and authentication state from the store
     const { loading, error , isAuthenticated} = useSelector((state: RootState) => state.auth);
+
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         dispatch(loginUser({ email, password, rememberMe }));
     };
+
+
     useEffect(() => {
         if (isAuthenticated) {
             navigate('/profile');
         }
     }, [isAuthenticated,navigate]);
+
+
+
+
     return (
         <>
             <Navigation />
@@ -55,7 +65,7 @@ export const SignIn: React.FC = () => {
                                 type="checkbox"
                                 id="remember-me"
                                 checked={rememberMe}
-                                onChange={() => setRememberMe(!rememberMe)} //fais passer la valeur inverse de rememberMe
+                                onChange={() => setRememberMe(!rememberMe)} // In case of rememberMe checked, we send inverted response of initial state
                             />
                             <label htmlFor="remember-me">Remember me</label>
                         </div>

@@ -9,12 +9,17 @@ import { logout } from '../../app/feature/authSlice';
 
 export const Navigation: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+
+    // We retrieve the authentication status and user profile from the Redux store
     const { isAuthenticated, userProfile } = useSelector((state: RootState) => state.auth);
     const [userName, setUserName] = useState('');
 
+    // We handle the logout action by dispatching the logout function
     const handleLogout = () => {
-        dispatch(logout());  // Dispatche l'action de déconnexion
+        dispatch(logout());
     };
+
+    // Effect to update the userName when the user profile is updated
     useEffect(() => {
         if (isAuthenticated) {
             setUserName(userProfile?.userName || '');
@@ -31,6 +36,7 @@ export const Navigation: React.FC = () => {
             <div>
                 {isAuthenticated ? (
                     <>
+                        {/* We display the profile link and logout option if the user is authenticated */}
                         <Link className="main-nav-item" to="/profile">
                             <i className="fa fa-user-circle"></i>
                             {userName}
@@ -41,6 +47,7 @@ export const Navigation: React.FC = () => {
                         </Link>
                     </>
                 ) : (
+                    // We display the sign-in option if the user is not authenticated
                     <Link className="main-nav-item" to="/sign-in">
                         <i className="fa fa-user-circle"></i>
                         Sign In
